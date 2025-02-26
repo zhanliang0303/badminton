@@ -1,89 +1,195 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/11.3.1/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/11.3.1/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/11.3.1/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/11.3.1/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/11.3.1/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/11.3.1/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/11.3.1/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/11.3.1/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/11.3.1/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/11.3.1/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>羽毛球場預約</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #schedule { margin-top: 20px; }
+        .booked { color: red; font-weight: bold; }
     </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+</head>
+<body>
+    <h1>羽毛球場預約系統</h1>
+    <label for="date">選擇日期：</label>
+    <input type="date" id="date">
+    <label for="time">選擇時間：</label>
+    <input type="time" id="time">
+    <button id="bookBtn">預約</button>
+
+    <h2>預約時段</h2>
+    <ul id="schedule"></ul>
+
+    <!-- ✅ 確保 Firebase SDK 正確載入 -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+        document.addEventListener("DOMContentLoaded", async function() {
+            console.log("🚀 正在初始化 Firebase...");
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
+            // 🔥 Firebase 設定
+            const firebaseConfig = {
+                apiKey: "AIzaSyCQWIIWhBIY0B_iZX3KSW7aWo0xtMT84Ew",
+                authDomain: "badminton-39217.firebaseapp.com",
+                projectId: "badminton-39217",
+                storageBucket: "badminton-39217.appspot.com",
+                messagingSenderId: "210517497470",
+                appId: "1:210517497470:web:ce1cc1d9d7df498d3fea2f",
+                measurementId: "G-9CW61BHC43"
+            };
+
+            // ✅ 初始化 Firebase
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            console.log("✅ Firebase 初始化完成！");
+
+            // 🔹 載入預約時段
+            async function loadBookings() {
+                let scheduleList = document.getElementById("schedule");
+                scheduleList.innerHTML = "";
+
+                const querySnapshot = await db.collection("reservations").get();
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    let li = document.createElement("li");
+                    li.textContent = `${data.date} ${data.time}`;
+                    li.classList.add("booked");
+                    scheduleList.appendChild(li);
+                });
+            }
+
+            // 🔹 預約場地
+            async function bookCourt() {
+                let date = document.getElementById("date").value;
+                let time = document.getElementById("time").value;
+
+                if (!date || !time) {
+                    alert("請選擇日期和時間！");
+                    return;
+                }
+
+                // 🔎 檢查是否已被預約
+                let courtRef = db.collection("reservations");
+                let snapshot = await courtRef.where("date", "==", date).where("time", "==", time).get();
+                if (!snapshot.empty) {
+                    alert("此時段已被預約！");
+                    return;
+                }
+
+                // ✅ 新增預約
+                await courtRef.add({ date, time });
+                alert("預約成功！");
+                loadBookings(); // 重新載入預約時段
+            }
+
+            // 🔹 綁定按鈕點擊事件
+            document.getElementById("bookBtn").addEventListener("click", bookCourt);
+
+            // 🔹 頁面載入時執行
+            loadBookings();
+        });
     </script>
-  </body>
+</body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>羽毛球場預約</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #schedule { margin-top: 20px; }
+        .booked { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>羽毛球場預約系統</h1>
+    <label for="date">選擇日期：</label>
+    <input type="date" id="date">
+    <label for="time">選擇時間：</label>
+    <input type="time" id="time">
+    <button id="bookBtn">預約</button>
+
+    <h2>預約時段</h2>
+    <ul id="schedule"></ul>
+
+    <!-- ✅ 確保 Firebase SDK 正確載入 -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            console.log("🚀 正在初始化 Firebase...");
+
+            // 🔥 Firebase 設定
+            const firebaseConfig = {
+                apiKey: "AIzaSyCQWIIWhBIY0B_iZX3KSW7aWo0xtMT84Ew",
+                authDomain: "badminton-39217.firebaseapp.com",
+                projectId: "badminton-39217",
+                storageBucket: "badminton-39217.appspot.com",
+                messagingSenderId: "210517497470",
+                appId: "1:210517497470:web:ce1cc1d9d7df498d3fea2f",
+                measurementId: "G-9CW61BHC43"
+            };
+
+            // ✅ 初始化 Firebase
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            console.log("✅ Firebase 初始化完成！");
+
+            // 🔹 載入預約時段
+            async function loadBookings() {
+                let scheduleList = document.getElementById("schedule");
+                scheduleList.innerHTML = "";
+
+                const querySnapshot = await db.collection("reservations").get();
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    let li = document.createElement("li");
+                    li.textContent = `${data.date} ${data.time}`;
+                    li.classList.add("booked");
+                    scheduleList.appendChild(li);
+                });
+            }
+
+            // 🔹 預約場地
+            async function bookCourt() {
+                let date = document.getElementById("date").value;
+                let time = document.getElementById("time").value;
+
+                if (!date || !time) {
+                    alert("請選擇日期和時間！");
+                    return;
+                }
+
+                // 🔎 檢查是否已被預約
+                let courtRef = db.collection("reservations");
+                let snapshot = await courtRef.where("date", "==", date).where("time", "==", time).get();
+                if (!snapshot.empty) {
+                    alert("此時段已被預約！");
+                    return;
+                }
+
+                // ✅ 新增預約
+                await courtRef.add({ date, time });
+                alert("預約成功！");
+                loadBookings(); // 重新載入預約時段
+            }
+
+            // 🔹 綁定按鈕點擊事件
+            document.getElementById("bookBtn").addEventListener("click", bookCourt);
+
+            // 🔹 頁面載入時執行
+            loadBookings();
+        });
+    </script>
+</body>
+</html>
+>>>>>>> 3f9d2e6 (Initialize Firebase Hosting setup)
